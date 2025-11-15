@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: background 1.5s ease-in-out;
 }
 
 .chat-header {

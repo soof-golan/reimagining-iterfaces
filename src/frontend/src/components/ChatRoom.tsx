@@ -5,6 +5,7 @@ import apiClient from '../services/api'
 import MessageList from './MessageList'
 import PersonaPanel from './PersonaPanel'
 import MessageInput from './MessageInput'
+import { generateDynamicGradient, updatePersonaActivity } from '../utils/dynamicGradient'
 import './ChatRoom.css'
 
 interface ChatRoomProps {
@@ -18,8 +19,12 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
   const [userId] = useState(() => `user-${Math.random().toString(36).substr(2, 9)}`)
   const [loading, setLoading] = useState(true)
   const [mutedPersonas, setMutedPersonas] = useState<Set<string>>(new Set())
+  const [personaActivity, setPersonaActivity] = useState<Record<string, number>>({})
   const wsClientRef = useRef<WebSocketClient | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const activePersonas = Object.keys(personas).filter(id => !mutedPersonas.has(id))
+  const backgroundGradient = generateDynamicGradient(activePersonas, personaActivity)
 
   const handleToggleMute = (personaId: string) => {
     setMutedPersonas((prev) => {
@@ -79,6 +84,10 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
           }
           return [...prev, message]
         })
+
+        if (message.sender_type === 'persona' && message.persona_id) {
+          setPersonaActivity((prev) => updatePersonaActivity(prev, message.persona_id!))
+        }
       },
       () => {
         console.log('WebSocket disconnected')
@@ -109,7 +118,7 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
   }
 
   return (
-    <div className="chat-room">
+    <div className="chat-room" style={{ background: backgroundGradient }}>
       <div className="chat-header">
         <button className="back-btn" onClick={onBack}>
           ← Back
