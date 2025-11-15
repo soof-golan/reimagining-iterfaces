@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 from fastapi import FastAPI, WebSocket, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -168,10 +169,11 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
             else:
                 responding_personas = get_persona_ids()[:2]
 
-            async def generate_and_send_response(persona_id: str):
+            async def generate_and_send_response(persona_id: str, trigger_followup: bool = True):
                 try:
+                    updated_history = await room_manager.get_conversation_history(session, room_id, limit=20)
                     response = await persona_engine.generate_response(
-                        persona_id, user_message, conversation_history
+                        persona_id, user_message, updated_history
                     )
 
                     await room_manager.save_message(
@@ -183,7 +185,8 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
                         "persona_id": persona_id,
                         "persona_name": persona_engine.get_persona_info(persona_id).name,
                         "content": response,
-                        "sender_type": "persona"
+                        "sender_type": "persona",
+                        "created_at": datetime.utcnow().isoformat()
                     }
 
                     for connection in active_connections[room_id]:
@@ -191,6 +194,17 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
                             await connection.send_text(json.dumps(persona_msg_payload))
                         except Exception:
                             pass
+
+                    if trigger_followup and len(updated_history) >= 2:
+                        await asyncio.sleep(2.0)
+
+                        available_personas = [p for p in get_persona_ids() if p != persona_id]
+                        if available_personas and len(available_personas) > 0:
+                            from random import choice, random
+                            if random() < 0.4:
+                                followup_persona = choice(available_personas)
+                                asyncio.create_task(generate_and_send_response(followup_persona, trigger_followup=False))
+
                 except Exception as e:
                     error_payload = {
                         "type": "error",
