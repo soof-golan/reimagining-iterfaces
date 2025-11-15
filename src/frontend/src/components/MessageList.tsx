@@ -7,9 +7,10 @@ interface MessageListProps {
   personas: PersonaInfo
   userId: string
   mutedPersonas: Set<string>
+  mysteryMode: boolean
 }
 
-function MessageList({ messages, personas, userId, mutedPersonas }: MessageListProps) {
+function MessageList({ messages, personas, userId, mutedPersonas, mysteryMode }: MessageListProps) {
   const filteredMessages = messages.filter((msg) => {
     if (msg.sender_type === 'persona' && msg.persona_id) {
       return !mutedPersonas.has(msg.persona_id)
@@ -49,8 +50,11 @@ function MessageList({ messages, personas, userId, mutedPersonas }: MessageListP
             )}
 
             <div className="message-bubble">
-              {msg.sender_type === 'persona' && msg.persona_name && (
+              {msg.sender_type === 'persona' && msg.persona_name && !mysteryMode && (
                 <div className="message-sender">{msg.persona_name}</div>
+              )}
+              {msg.sender_type === 'persona' && mysteryMode && (
+                <div className="message-sender">Mystery Voice</div>
               )}
               {msg.sender_type === 'user' && (
                 <div className="message-sender">You</div>

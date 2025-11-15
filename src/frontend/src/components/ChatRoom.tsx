@@ -142,6 +142,7 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
                 personas={personas}
                 userId={userId}
                 mutedPersonas={mutedPersonas}
+                mysteryMode={room.mystery_mode}
               />
               <div ref={messagesEndRef} />
             </>
