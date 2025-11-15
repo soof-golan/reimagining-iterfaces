@@ -62,6 +62,10 @@
   object-fit: cover;
 }
 
+.mystery-mask {
+  font-size: 1.5rem;
+}
+
 .user-avatar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }

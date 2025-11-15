@@ -34,10 +34,12 @@ function MessageList({ messages, personas, userId, mutedPersonas, mysteryMode }:
               <div
                 className="message-avatar"
                 style={{
-                  backgroundColor: getPersonaColor(msg.persona_id),
+                  backgroundColor: mysteryMode ? '#0F0' : getPersonaColor(msg.persona_id),
                 }}
               >
-                {getPersonaImage(msg.persona_id) ? (
+                {mysteryMode ? (
+                  <span className="mystery-mask">🎭</span>
+                ) : getPersonaImage(msg.persona_id) ? (
                   <img
                     src={getPersonaImage(msg.persona_id)!}
                     alt={msg.persona_name || 'Persona'}

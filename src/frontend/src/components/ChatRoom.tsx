@@ -5,6 +5,7 @@ import apiClient from '../services/api'
 import MessageList from './MessageList'
 import PersonaPanel from './PersonaPanel'
 import MessageInput from './MessageInput'
+import MatrixRain from './MatrixRain'
 import { generateDynamicGradient, updatePersonaActivity } from '../utils/dynamicGradient'
 import './ChatRoom.css'
 
@@ -118,7 +119,8 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
   }
 
   return (
-    <div className="chat-room" style={{ background: backgroundGradient }}>
+    <div className="chat-room" style={{ background: room.mystery_mode ? '#000' : backgroundGradient }}>
+      {room.mystery_mode && <MatrixRain />}
       <div className="chat-header">
         <button className="back-btn" onClick={onBack}>
           ← Back
