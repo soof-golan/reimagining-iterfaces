@@ -53,7 +53,17 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
     wsClientRef.current.connect(
       room.id,
       (message: Message) => {
-        setMessages((prev) => [...prev, message])
+        setMessages((prev) => {
+          const isDuplicate = prev.some(
+            (msg) =>
+              msg.content === message.content &&
+              msg.sender_type === message.sender_type &&
+              msg.user_id === message.user_id &&
+              msg.persona_id === message.persona_id &&
+              Math.abs(new Date(msg.created_at || '').getTime() - new Date(message.created_at || '').getTime()) < 1000
+          )
+          return isDuplicate ? prev : [...prev, message]
+        })
       },
       () => {
         console.log('WebSocket disconnected')
