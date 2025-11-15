@@ -171,7 +171,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
                 all_personas = get_persona_ids()
                 responding_personas = sample(all_personas, min(4, len(all_personas)))
 
-            async def generate_and_send_response(persona_id: str, trigger_followup: bool = True):
+            async def generate_and_send_response(persona_id: str, depth: int = 0, max_depth: int = 3):
                 try:
                     updated_history = await room_manager.get_conversation_history(session, room_id, limit=20)
                     response = await persona_engine.generate_response(
@@ -197,15 +197,15 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
                         except Exception:
                             pass
 
-                    if trigger_followup and len(updated_history) >= 2:
-                        await asyncio.sleep(2.0)
+                    if depth < max_depth and len(updated_history) >= 2:
+                        await asyncio.sleep(1.5)
 
                         available_personas = [p for p in get_persona_ids() if p != persona_id]
-                        if available_personas and len(available_personas) > 0:
+                        if available_personas:
                             from random import choice, random
-                            if random() < 0.8:
+                            if random() < 0.7:
                                 followup_persona = choice(available_personas)
-                                asyncio.create_task(generate_and_send_response(followup_persona, trigger_followup=False))
+                                asyncio.create_task(generate_and_send_response(followup_persona, depth=depth + 1, max_depth=max_depth))
 
                 except Exception as e:
                     error_payload = {
