@@ -198,13 +198,14 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
                             pass
 
                     if depth < max_depth and len(updated_history) >= 2:
-                        await asyncio.sleep(1.5)
+                        await asyncio.sleep(0.5)
 
                         available_personas = [p for p in get_persona_ids() if p != persona_id]
                         if available_personas:
-                            from random import choice, random
-                            if random() < 0.7:
-                                followup_persona = choice(available_personas)
+                            from random import choice, sample, random
+                            num_followups = 1 if depth > 0 else 2
+                            selected = sample(available_personas, min(num_followups, len(available_personas)))
+                            for followup_persona in selected:
                                 asyncio.create_task(generate_and_send_response(followup_persona, depth=depth + 1, max_depth=max_depth))
 
                 except Exception as e:
