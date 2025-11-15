@@ -18,9 +18,7 @@ export class WebSocketClient {
     this.disconnectHandler = onDisconnect;
 
     const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const host = window.location.hostname;
-    const port = window.location.port ? `:${window.location.port}` : '';
-    const wsUrl = `${wsProtocol}://${host}${port}/ws/rooms/${roomId}`;
+    const wsUrl = `${wsProtocol}://localhost:8000/ws/rooms/${roomId}`;
 
     try {
       this.ws = new WebSocket(wsUrl);
