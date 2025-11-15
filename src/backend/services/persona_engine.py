@@ -46,9 +46,9 @@ class PersonaEngine:
                 content = msg.get("content", "")
 
                 if sender_type == "persona":
-                    context += f"[Persona {sender_id}]: {content}\n"
+                    context += f"\n\n{sender_id}: {content}\n"
                 else:
-                    context += f"[User]: {content}\n"
+                    context += f"\n\nuser: {content}\n"
 
             context += f"\nRespond naturally to this conversation. Keep it brief (1-2 sentences)."
             prompt = context
