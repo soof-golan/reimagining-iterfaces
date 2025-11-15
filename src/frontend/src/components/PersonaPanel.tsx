@@ -1,4 +1,4 @@
-import { PersonaInfo } from '../types'
+import type { PersonaInfo } from '../types'
 import './PersonaPanel.css'
 
 interface PersonaPanelProps {

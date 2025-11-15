@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Room, Message, PersonaInfo } from '../types'
+import type { Room, Message, PersonaInfo } from '../types'
 import WebSocketClient from '../services/websocket'
 import apiClient from '../services/api'
 import MessageList from './MessageList'

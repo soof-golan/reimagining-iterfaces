@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import RoomList from './components/RoomList'
 import ChatRoom from './components/ChatRoom'
-import { Room } from './types'
+import type { Room } from './types'
 import apiClient from './services/api'
 
 function App() {

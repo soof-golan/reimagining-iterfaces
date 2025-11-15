@@ -1,4 +1,4 @@
-import { Message, PersonaInfo } from '../types'
+import type { Message, PersonaInfo } from '../types'
 import './MessageList.css'
 
 interface MessageListProps {

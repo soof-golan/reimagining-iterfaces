@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Room } from '../types'
+import { type Room } from '../types'
 import './RoomList.css'
 
 interface RoomListProps {
@@ -9,7 +9,7 @@ interface RoomListProps {
   onCreateRoom: (name: string, mysteryMode: boolean) => void
 }
 
-function RoomList({ rooms, loading, onSelectRoom, onCreateRoom }: RoomListProps) {
+export function RoomList({ rooms, loading, onSelectRoom, onCreateRoom }: RoomListProps) {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [roomName, setRoomName] = useState('')
   const [mysteryMode, setMysteryMode] = useState(false)
