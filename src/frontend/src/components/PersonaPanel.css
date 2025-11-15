@@ -42,7 +42,24 @@
 }
 
 .persona-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.75rem;
+}
+
+.persona-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.persona-color-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .persona-header h4 {
@@ -50,6 +67,25 @@
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
+}
+
+.mute-toggle {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.mute-toggle:hover {
+  opacity: 1;
+}
+
+.persona-card.muted {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .persona-description {

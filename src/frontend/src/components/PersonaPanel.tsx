@@ -1,12 +1,15 @@
 import type { PersonaInfo } from '../types'
+import { getPersonaColor } from '../utils/personaColors'
 import './PersonaPanel.css'
 
 interface PersonaPanelProps {
   personas: PersonaInfo
   mysteryMode: boolean
+  mutedPersonas: Set<string>
+  onToggleMute: (personaId: string) => void
 }
 
-function PersonaPanel({ personas, mysteryMode }: PersonaPanelProps) {
+function PersonaPanel({ personas, mysteryMode, mutedPersonas, onToggleMute }: PersonaPanelProps) {
   const personaEntries = Object.entries(personas)
 
   return (
@@ -19,11 +22,28 @@ function PersonaPanel({ personas, mysteryMode }: PersonaPanelProps) {
         {personaEntries.length === 0 ? (
           <div className="no-personas">Loading personas...</div>
         ) : (
-          personaEntries.map(([id, persona]) => (
-            <div key={id} className="persona-card">
-              <div className="persona-header">
-                <h4>{persona.name}</h4>
-              </div>
+          personaEntries.map(([id, persona]) => {
+            const isMuted = mutedPersonas.has(id)
+            const personaColor = getPersonaColor(id)
+
+            return (
+              <div key={id} className={`persona-card ${isMuted ? 'muted' : ''}`}>
+                <div className="persona-header">
+                  <div className="persona-name-row">
+                    <div
+                      className="persona-color-indicator"
+                      style={{ backgroundColor: personaColor }}
+                    />
+                    <h4>{persona.name}</h4>
+                  </div>
+                  <button
+                    className="mute-toggle"
+                    onClick={() => onToggleMute(id)}
+                    title={isMuted ? 'Unmute' : 'Mute'}
+                  >
+                    {isMuted ? '🔇' : '🔊'}
+                  </button>
+                </div>
 
               {!mysteryMode && (
                 <>
@@ -58,8 +78,9 @@ function PersonaPanel({ personas, mysteryMode }: PersonaPanelProps) {
                   )}
                 </>
               )}
-            </div>
-          ))
+              </div>
+            )
+          })
         )}
       </div>
     </div>

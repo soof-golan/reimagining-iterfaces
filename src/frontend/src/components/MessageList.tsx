@@ -1,30 +1,30 @@
 import type { Message, PersonaInfo } from '../types'
+import { getPersonaColor } from '../utils/personaColors'
 import './MessageList.css'
 
 interface MessageListProps {
   messages: Message[]
   personas: PersonaInfo
   userId: string
+  mutedPersonas: Set<string>
 }
 
-function MessageList({ messages, personas, userId }: MessageListProps) {
-  const getPersonaColor = (personaId: string): string => {
-    const colors = [
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
-      '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'
-    ]
-    const index = Object.keys(personas).indexOf(personaId) % colors.length
-    return colors[index]
-  }
+function MessageList({ messages, personas, userId, mutedPersonas }: MessageListProps) {
+  const filteredMessages = messages.filter((msg) => {
+    if (msg.sender_type === 'persona' && msg.persona_id) {
+      return !mutedPersonas.has(msg.persona_id)
+    }
+    return true
+  })
 
   return (
     <div className="message-list">
-      {messages.length === 0 ? (
+      {filteredMessages.length === 0 ? (
         <div className="no-messages">
           <p>Start a conversation!</p>
         </div>
       ) : (
-        messages.map((msg, idx) => (
+        filteredMessages.map((msg, idx) => (
           <div
             key={idx}
             className={`message message-${msg.sender_type}`}

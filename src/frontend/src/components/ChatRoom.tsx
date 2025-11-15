@@ -17,8 +17,21 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
   const [personas, setPersonas] = useState<PersonaInfo>({})
   const [userId] = useState(() => `user-${Math.random().toString(36).substr(2, 9)}`)
   const [loading, setLoading] = useState(true)
+  const [mutedPersonas, setMutedPersonas] = useState<Set<string>>(new Set())
   const wsClientRef = useRef<WebSocketClient | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const handleToggleMute = (personaId: string) => {
+    setMutedPersonas((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(personaId)) {
+        newSet.delete(personaId)
+      } else {
+        newSet.add(personaId)
+      }
+      return newSet
+    })
+  }
 
   useEffect(() => {
     loadInitialData()
@@ -115,7 +128,12 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
             <div className="loading">Loading room...</div>
           ) : (
             <>
-              <MessageList messages={messages} personas={personas} userId={userId} />
+              <MessageList
+                messages={messages}
+                personas={personas}
+                userId={userId}
+                mutedPersonas={mutedPersonas}
+              />
               <div ref={messagesEndRef} />
             </>
           )}
@@ -125,6 +143,8 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
           <PersonaPanel
             personas={personas}
             mysteryMode={room.mystery_mode}
+            mutedPersonas={mutedPersonas}
+            onToggleMute={handleToggleMute}
           />
         </aside>
       </div>
