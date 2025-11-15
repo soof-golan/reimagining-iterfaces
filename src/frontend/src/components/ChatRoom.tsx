@@ -54,15 +54,17 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
       room.id,
       (message: Message) => {
         setMessages((prev) => {
-          const isDuplicate = prev.some(
-            (msg) =>
-              msg.content === message.content &&
-              msg.sender_type === message.sender_type &&
-              msg.user_id === message.user_id &&
-              msg.persona_id === message.persona_id &&
-              Math.abs(new Date(msg.created_at || '').getTime() - new Date(message.created_at || '').getTime()) < 1000
-          )
-          return isDuplicate ? prev : [...prev, message]
+          const lastMessage = prev[prev.length - 1]
+          if (
+            lastMessage &&
+            lastMessage.content === message.content &&
+            lastMessage.sender_type === message.sender_type &&
+            lastMessage.user_id === message.user_id &&
+            lastMessage.persona_id === message.persona_id
+          ) {
+            return prev
+          }
+          return [...prev, message]
         })
       },
       () => {
@@ -76,6 +78,16 @@ function ChatRoom({ room, onBack }: ChatRoomProps) {
       console.error('WebSocket not connected')
       return
     }
+
+    const optimisticMessage: Message = {
+      type: 'user_message',
+      user_id: userId,
+      content,
+      sender_type: 'user',
+      created_at: new Date().toISOString()
+    }
+
+    setMessages((prev) => [...prev, optimisticMessage])
 
     wsClientRef.current.send({
       user_id: userId,
