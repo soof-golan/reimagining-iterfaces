@@ -34,18 +34,23 @@ class PersonaEngine:
         delay = uniform(persona_trait.response_delay_min, persona_trait.response_delay_max)
         await asyncio.sleep(delay)
 
-        context = ""
-        if conversation_history:
-            recent_messages = conversation_history[-5:]
+        if conversation_history and len(conversation_history) > 0:
+            recent_messages = conversation_history[-8:]
             context = "Recent conversation:\n"
             for msg in recent_messages:
-                sender = msg.get("sender_id", "Unknown")
+                sender_type = msg.get("sender_type", "")
+                sender_id = msg.get("sender_id", "Unknown")
                 content = msg.get("content", "")
-                context += f"{sender}: {content}\n"
-            context += f"\nNow respond to: {user_message}"
+
+                if sender_type == "persona":
+                    context += f"[Persona {sender_id}]: {content}\n"
+                else:
+                    context += f"[User]: {content}\n"
+
+            context += f"\nRespond naturally to this conversation. Keep it brief (1-2 sentences)."
             prompt = context
         else:
-            prompt = user_message
+            prompt = f"{user_message}\n\nRespond briefly in 1-2 sentences."
 
         result = await agent.run(prompt)
         return result.output
