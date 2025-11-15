@@ -80,16 +80,30 @@ async def create_room(name: str, mystery_mode: bool = False, session: AsyncSessi
 @app.get("/rooms/{room_id}/messages")
 async def get_messages(room_id: int, session: AsyncSession = Depends(get_session)):
     messages = await room_manager.get_room_messages(session, room_id)
-    return [
-        {
+    engine = get_persona_engine()
+    result = []
+    for msg in messages:
+        message_dict = {
             "id": msg.id,
-            "sender_type": msg.sender_type,
-            "sender_id": msg.sender_id,
+            "type": f"{msg.sender_type}_message",
             "content": msg.content,
+            "sender_type": msg.sender_type,
             "created_at": msg.created_at.isoformat()
         }
-        for msg in messages
-    ]
+
+        if msg.sender_type == "user":
+            message_dict["user_id"] = msg.sender_id
+        elif msg.sender_type == "persona":
+            message_dict["persona_id"] = msg.sender_id
+            try:
+                persona = engine.get_persona_info(msg.sender_id)
+                message_dict["persona_name"] = persona.name
+            except:
+                message_dict["persona_name"] = msg.sender_id
+
+        result.append(message_dict)
+
+    return result
 
 
 @app.get("/personas")
