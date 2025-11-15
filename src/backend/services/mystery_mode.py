@@ -2,11 +2,14 @@ import re
 from random import choice, choices
 from pydantic_ai import Agent
 from backend.personas.definitions import get_persona_ids
+from backend.config import settings
+import os
 
 
 class MysteryModeEngine:
     def __init__(self, model: str = "openai:gpt-4o-mini"):
         self.model = model
+        os.environ["OPENAI_API_KEY"] = settings.openai_api_key
         self.tone_analyzer = Agent(
             self.model,
             instructions="""Analyze the tone of the user's message. Respond with ONLY ONE of these words:

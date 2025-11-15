@@ -2,12 +2,15 @@ import asyncio
 from random import uniform
 from pydantic_ai import Agent
 from backend.personas.definitions import get_persona, get_all_personas, PersonaTrait
+from backend.config import settings
+import os
 
 
 class PersonaEngine:
     def __init__(self, model: str = "openai:gpt-4o-mini"):
         self.model = model
         self.agents: dict[str, Agent] = {}
+        os.environ["OPENAI_API_KEY"] = settings.openai_api_key
         self._initialize_agents()
 
     def _initialize_agents(self):
@@ -32,7 +35,7 @@ class PersonaEngine:
         persona_trait = get_persona(persona_id)
 
         delay = uniform(persona_trait.response_delay_min, persona_trait.response_delay_max)
-        await asyncio.sleep(delay)
+        await asyncio.sleep(0)
 
         if conversation_history and len(conversation_history) > 0:
             recent_messages = conversation_history[-8:]
