@@ -35,7 +35,7 @@ class PersonaEngine:
         persona_trait = get_persona(persona_id)
 
         delay = uniform(persona_trait.response_delay_min, persona_trait.response_delay_max)
-        await asyncio.sleep(0)
+        await asyncio.sleep(delay)
 
         if conversation_history and len(conversation_history) > 0:
             recent_messages = conversation_history[-8:]
