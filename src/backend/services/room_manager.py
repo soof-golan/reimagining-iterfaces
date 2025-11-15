@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.backend.models.database import Room, Message
+from backend.models.database import Room, Message
 from datetime import datetime
 
 

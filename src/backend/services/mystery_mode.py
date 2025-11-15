@@ -1,7 +1,7 @@
 import re
 from random import choice, choices
 from pydantic_ai import Agent
-from src.backend.personas.definitions import get_persona_ids
+from backend.personas.definitions import get_persona_ids
 
 
 class MysteryModeEngine:

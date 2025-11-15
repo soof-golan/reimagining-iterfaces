@@ -1,7 +1,7 @@
 import asyncio
 from random import uniform
 from pydantic_ai import Agent
-from src.backend.personas.definitions import get_persona, get_all_personas, PersonaTrait
+from backend.personas.definitions import get_persona, get_all_personas, PersonaTrait
 
 
 class PersonaEngine:

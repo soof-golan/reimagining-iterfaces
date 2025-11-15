@@ -33,6 +33,7 @@ source = { editable = "." }
 dependencies = [
     { name = "aiosqlite" },
     { name = "fastapi" },
+    { name = "greenlet" },
     { name = "pydantic-ai" },
     { name = "python-dotenv" },
     { name = "sqlalchemy" },
@@ -44,6 +45,7 @@ dependencies = [
 requires-dist = [
     { name = "aiosqlite", specifier = ">=0.21.0" },
     { name = "fastapi", specifier = ">=0.121.2" },
+    { name = "greenlet", specifier = ">=3.2.4" },
     { name = "pydantic-ai", specifier = ">=1.18.0" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "sqlalchemy", specifier = ">=2.0.44" },

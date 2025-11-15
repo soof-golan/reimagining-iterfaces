@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, String, Text, ForeignKey, Boolean
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from src.backend.config import settings
+from backend.config import settings
 
 
 class Base(DeclarativeBase):

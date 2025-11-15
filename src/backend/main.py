@@ -2,12 +2,12 @@ import asyncio
 from fastapi import FastAPI, WebSocket, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.backend.config import settings
-from src.backend.models.database import init_db, get_session, async_session_maker
-from src.backend.services.persona_engine import PersonaEngine
-from src.backend.services.mystery_mode import MysteryModeEngine
-from src.backend.services.room_manager import RoomManager
-from src.backend.personas.definitions import get_persona_ids
+from backend.config import settings
+from backend.models.database import init_db, get_session, async_session_maker
+from backend.services.persona_engine import PersonaEngine
+from backend.services.mystery_mode import MysteryModeEngine
+from backend.services.room_manager import RoomManager
+from backend.personas.definitions import get_persona_ids
 import json
 from typing import Set
 import uuid
@@ -23,17 +23,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-persona_engine = PersonaEngine()
-mystery_mode_engine = MysteryModeEngine()
+persona_engine: PersonaEngine | None = None
+mystery_mode_engine: MysteryModeEngine | None = None
 room_manager = RoomManager()
 
 active_connections: dict[int, Set[WebSocket]] = {}
 room_persona_tasks: dict[int, dict] = {}
 
 
+def get_persona_engine() -> PersonaEngine:
+    global persona_engine
+    if persona_engine is None:
+        persona_engine = PersonaEngine()
+    return persona_engine
+
+
+def get_mystery_mode_engine() -> MysteryModeEngine:
+    global mystery_mode_engine
+    if mystery_mode_engine is None:
+        mystery_mode_engine = MysteryModeEngine()
+    return mystery_mode_engine
+
+
 @app.on_event("startup")
 async def startup():
     await init_db()
+    get_persona_engine()
+    get_mystery_mode_engine()
 
 
 @app.get("/rooms")
@@ -78,7 +94,8 @@ async def get_messages(room_id: int, session: AsyncSession = Depends(get_session
 
 @app.get("/personas")
 async def list_personas():
-    personas = persona_engine.get_all_persona_info()
+    engine = get_persona_engine()
+    personas = engine.get_all_persona_info()
     return {
         persona_id: {
             "name": persona.name,
