@@ -1,16 +1,27 @@
 export const PERSONA_COLORS: Record<string, string> = {
-  wise_grandmother: '#9B59B6',
-  devils_advocate: '#E74C3C',
-  medieval_barkeeper: '#D35400',
+  grandmother: '#9B59B6',
+  devils_adv: '#E74C3C',
+  barkeeper: '#D35400',
   angel: '#F39C12',
-  sarcastic_tech: '#3498DB',
-  renaissance_artist: '#1ABC9C',
-  cold_analyst: '#34495E',
-  compassionate_listener: '#E91E63',
+  jacquemus: '#E91E63',
+  critical_voice: '#34495E',
+}
+
+export const PERSONA_IMAGES: Record<string, string> = {
+  grandmother: '/grandmother.png',
+  devils_adv: '/devils_adv.png',
+  barkeeper: '/barkeeper.png',
+  angel: '/angel.png',
+  jacquemus: '/jacquemus.png',
+  critical_voice: '/critical_voice.png',
 }
 
 export function getPersonaColor(personaId: string): string {
   return PERSONA_COLORS[personaId] || '#95A5A6'
+}
+
+export function getPersonaImage(personaId: string): string | null {
+  return PERSONA_IMAGES[personaId] || null
 }
 
 export function getPersonaColorWithOpacity(personaId: string, opacity: number): string {

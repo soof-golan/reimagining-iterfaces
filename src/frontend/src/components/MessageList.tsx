@@ -1,5 +1,5 @@
 import type { Message, PersonaInfo } from '../types'
-import { getPersonaColor } from '../utils/personaColors'
+import { getPersonaColor, getPersonaImage } from '../utils/personaColors'
 import './MessageList.css'
 
 interface MessageListProps {
@@ -36,7 +36,15 @@ function MessageList({ messages, personas, userId, mutedPersonas }: MessageListP
                   backgroundColor: getPersonaColor(msg.persona_id),
                 }}
               >
-                {msg.persona_name?.[0] || '?'}
+                {getPersonaImage(msg.persona_id) ? (
+                  <img
+                    src={getPersonaImage(msg.persona_id)!}
+                    alt={msg.persona_name || 'Persona'}
+                    className="avatar-image"
+                  />
+                ) : (
+                  msg.persona_name?.[0] || '?'
+                )}
               </div>
             )}
 
