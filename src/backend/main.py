@@ -164,10 +164,12 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
 
             if room.mystery_mode:
                 responding_personas = await mystery_mode_engine.select_responding_personas(
-                    user_message, num_responses=2
+                    user_message, num_responses=3
                 )
             else:
-                responding_personas = get_persona_ids()[:2]
+                from random import sample
+                all_personas = get_persona_ids()
+                responding_personas = sample(all_personas, min(4, len(all_personas)))
 
             async def generate_and_send_response(persona_id: str, trigger_followup: bool = True):
                 try:
@@ -201,7 +203,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: int):
                         available_personas = [p for p in get_persona_ids() if p != persona_id]
                         if available_personas and len(available_personas) > 0:
                             from random import choice, random
-                            if random() < 0.4:
+                            if random() < 0.8:
                                 followup_persona = choice(available_personas)
                                 asyncio.create_task(generate_and_send_response(followup_persona, trigger_followup=False))
 
